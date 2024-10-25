@@ -14,3 +14,5 @@ docker exec -it python manage.py init_schools <number_of_schools>
 ```
 
 
+
+
