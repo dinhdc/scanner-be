@@ -12,3 +12,8 @@ docker exec -it scanner python manage.py init_superuser username=<YOUR_USERNAME>
 ```docker
 docker exec -it scanner python manage.py init_schools <number_of_schools>
 ```
+
+### Stop if rerun
+```docker 
+docker rm -f scanner
+```
