@@ -1,4 +1,5 @@
 from drf_yasg import openapi
+from .schemas import school_instance_schema
 
 login_request = openapi.Schema(
     type=openapi.TYPE_OBJECT,
@@ -28,9 +29,9 @@ login_success_response = openapi.Schema(
                         "last_name": openapi.Schema(type=openapi.TYPE_STRING, ),
                         "is_staff": openapi.Schema(type=openapi.TYPE_BOOLEAN, ),
                     }
-                )
+                ),
+                "school": school_instance_schema
             }
         )
     }
 )
-

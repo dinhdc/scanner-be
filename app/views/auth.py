@@ -6,6 +6,8 @@ from rest_framework.views import APIView
 from django.contrib.auth.models import User
 
 from app import swaggers as swg
+from app import models
+from app import serializers as srz
 
 
 class AuthLoginView(APIView):
@@ -36,6 +38,10 @@ class AuthLoginView(APIView):
                     status=400
                 )
             token, created = Token.objects.get_or_create(user=user)
+            staff = models.Staff.objects.filter(user=user).first()
+            school_res = {}
+            if staff and staff.school:
+                school_res = srz.SchoolSerializer(staff.school).data
             return Response(
                 {
                     "code": 200,
@@ -49,7 +55,8 @@ class AuthLoginView(APIView):
                             "first_name": user.first_name,
                             "last_name": user.last_name,
                             "is_staff": user.is_staff,
-                        }
+                        },
+                        "school": school_res,
                     }
                 },
                 status=200

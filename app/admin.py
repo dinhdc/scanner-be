@@ -3,3 +3,5 @@ from app.models import *
 
 admin.site.register(School)
 admin.site.register(Staff)
+admin.site.register(Event)
+admin.site.register(EventParticipator)

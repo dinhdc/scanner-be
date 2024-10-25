@@ -33,3 +33,17 @@ user_instance_schema = openapi.Schema(
         "last_name": openapi.Schema(type=openapi.TYPE_STRING, description="last name", ),
     }
 )
+
+participant_event_schema = openapi.Schema(
+    type=openapi.TYPE_OBJECT,
+    properties={
+        "id": openapi.Schema(type=openapi.TYPE_INTEGER, description="id of participant", default=0),
+        "name": openapi.Schema(type=openapi.TYPE_STRING, description="name of participant", ),
+        "code": openapi.Schema(type=openapi.TYPE_STRING, description="code of participant", ),
+        "checkin_at": openapi.Schema(type=openapi.TYPE_STRING, description="check in datetime if checked", ),
+        "created_at": openapi.Schema(type=openapi.TYPE_STRING, description="time created invitation", ),
+        "created_by": user_instance_schema,
+        "updated_by": user_instance_schema,
+        "event": event_instance_schema,
+    }
+)
