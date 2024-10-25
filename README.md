@@ -13,6 +13,11 @@ docker exec -it scanner python manage.py init_superuser username=<YOUR_USERNAME>
 docker exec -it scanner python manage.py init_schools <number_of_schools>
 ```
 
+### Create users fake
+```docker
+docker exec -it scanner python manage.py init_user <number_of_user>
+```
+
 ### Stop if rerun
 ```docker 
 docker rm -f scanner

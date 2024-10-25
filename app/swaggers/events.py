@@ -1,12 +1,13 @@
 from drf_yasg import openapi
 from .base import paginate_request
-from .schemas import user_instance_schema
+from .schemas import event_instance_schema
 
-staff_list_req = [
+event_list_params = [
+                        openapi.Parameter("school", in_=openapi.IN_QUERY, type=openapi.TYPE_INTEGER,
+                                          description="id of school"),
+                    ] + paginate_request
 
-] + paginate_request
-
-staff_list_res = openapi.Schema(
+event_list_response = openapi.Schema(
     type=openapi.TYPE_OBJECT,
     properties={
         "code": openapi.Schema(type=openapi.TYPE_INTEGER, description="code of status response", default=200),
@@ -17,35 +18,31 @@ staff_list_res = openapi.Schema(
         "next": openapi.Schema(type=openapi.TYPE_STRING, description="link of next page if has"),
         "data": openapi.Schema(
             type=openapi.TYPE_ARRAY,
-            items=user_instance_schema,
+            items=event_instance_schema
         )
 
     }
 )
 
-add_staff_to_school_req = openapi.Schema(
+event_create_params = openapi.Schema(
     type=openapi.TYPE_OBJECT,
     properties={
-        "users": openapi.Schema(type=openapi.TYPE_ARRAY, items=openapi.Schema(
-            type=openapi.TYPE_INTEGER
-        ), description="list id of user"),
-        'school': openapi.Schema(type=openapi.TYPE_INTEGER, description="id of school"),
+        "name": openapi.Schema(type=openapi.TYPE_STRING, description="name of event"),
+        "school": openapi.Schema(type=openapi.TYPE_INTEGER, description="id of school"),
+        "start_date": openapi.Schema(type=openapi.TYPE_STRING, description="start date", format="%Y-%m-%d %H:%M:%S"),
+        "end_date": openapi.Schema(type=openapi.TYPE_STRING, description="end date", format="%Y-%m-%d %H:%M:%S"),
+        "description": openapi.Schema(type=openapi.TYPE_STRING, description="description", format="text/plain"),
     },
-    required=["users", "school"],
+    required=["code", "name"],
 )
 
-add_staff_to_school_res = openapi.Schema(
+event_create_response = openapi.Schema(
     type=openapi.TYPE_OBJECT,
     properties={
         "code": openapi.Schema(type=openapi.TYPE_INTEGER, description="code of status response", default=200),
         "message": openapi.Schema(type=openapi.TYPE_STRING, description="success", default="Success"),
         "msgCode": openapi.Schema(type=openapi.TYPE_INTEGER, description="msgCode", default="success"),
-        "data": openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            properties={
-            },
-            default={}
-        )
+        "data": event_instance_schema
 
     }
 )

@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
@@ -7,6 +8,8 @@ from rest_framework.views import APIView
 from app import models
 from app import serializers
 from app import swaggers
+from app.core import handle_paginate
+from app.serializers.users import UserSerializer
 
 
 class SchoolListAPIView(APIView):
@@ -31,23 +34,12 @@ class SchoolListAPIView(APIView):
     )
     def get(self, request, *args, **kwargs):
         school_list = self.get_queryset()
-        paginator = self.pagination_class()
-        paginated_schools = paginator.paginate_queryset(school_list, request)
-        count = paginator.count
-        next_page = paginator.get_next_link()
-        previous_page = paginator.get_previous_link()
-        page_query = paginator.paginate_queryset(paginated_schools, request)
-        serializer = serializers.SchoolSerializer(page_query, many=True)
+        res = handle_paginate(school_list, request, serializers.SchoolSerializer)
+        res["code"] = 200
+        res["message"] = "Success"
+        res["msgCode"] = "success"
         return Response(
-            {
-                "code": 200,
-                "message": "Success",
-                "msgCode": "success",
-                "count": count,
-                "next": next_page,
-                "previous": previous_page,
-                "data": serializer.data,
-            },
+            res,
             status=200,
         )
 
@@ -89,13 +81,32 @@ class SchoolListAPIView(APIView):
                 status=400
             )
 
-class StaffInSchoolAPIView(APIView):
 
+class StaffInSchoolAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
         tags=["School"],
-        manual_parameters=swaggers.paginate_request,
+        operation_id="staff_in_school",
+        operation_summary="Staff in school api",
+        manual_parameters=swaggers.staff_in_school_request,
+        responses={
+            200: swaggers.staff_in_school_response
+        }
     )
-    def get(self, request, school_id, *args, **kwargs):
-        staffs = models.Staff.objects.filter(school_id=school_id)
+    def get(self, request, *args, **kwargs):
+        school_id = request.GET.get('school')
+        staffs = models.Staff.objects.filter(school_id=school_id).values_list("user_id", flat=True)
+        users = User.objects.filter(id__in=staffs)
+        res = handle_paginate(
+            users,
+            request,
+            UserSerializer
+        )
+        res["code"] = 200
+        res["message"] = "Success"
+        res["msgCode"] = "success"
+        return Response(
+            res,
+            status=200,
+        )
