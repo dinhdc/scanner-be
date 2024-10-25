@@ -10,9 +10,5 @@ docker exec -it scanner python manage.py init_superuser username=<YOUR_USERNAME>
 
 ### Create schools fake
 ```docker
-docker exec -it python manage.py init_schools <number_of_schools>
+docker exec -it scanner python manage.py init_schools <number_of_schools>
 ```
-
-
-
-
